@@ -1,6 +1,9 @@
+// Arduino program for controlling each color of an RGB LED (Red, Green, Blue), through the use of three potentiometers
+
 const int redPotPin = A0;
 const int greenPotPin = A1;
 const int bluePotPin = A2;
+
 const int minPotValue = 0;
 const int maxPotValue = 1023;
 
@@ -8,6 +11,7 @@ const int commonAnode = 0;
 const int redLedPin = 11;
 const int greenLedPin = 10;
 const int blueLedPin = 9;
+
 const int minLedValue = 0;
 const int maxLedValue = 255;
 
@@ -24,6 +28,7 @@ void setup() {
   pinMode(redPotPin, INPUT);
   pinMode(greenPotPin, INPUT);
   pinMode(bluePotPin, INPUT);
+
   pinMode(redLedPin, OUTPUT);
   pinMode(greenLedPin, OUTPUT);
   pinMode(blueLedPin, OUTPUT);
