@@ -12,8 +12,7 @@ Introduction to Robotics laboratory homework, taken in the 3rd year at the Facul
 <summary><h3>🚨 Homework #1 : RGB Led Controlled by Three Potentiometers</h3></summary>
 <br>
 
-**Task Requirements:** Use three separate potentiometers in controlling each color of the RGB led (Red, Green and Blue). The control must be done
-with digital electronics (aka the value of the potentiometer must be read with Arduino, and a mapped value must be written to each of the pins connected
+**Task Requirements:** Use three separate potentiometers to control each color of an RGB led (Red, Green and Blue). The control must be done with digital electronics (aka the value of the potentiometer must be read with Arduino, and a mapped value must be written to each of the pins connected
 to the led).
 
 **Components Used:**
