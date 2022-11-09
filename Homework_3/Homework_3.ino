@@ -1,3 +1,5 @@
+// Arduino program for modifying the leds on a 7-segment display through the use of a joystick
+
 const int pinA = 4;
 const int pinB = 5;
 const int pinC = 6;
@@ -24,7 +26,7 @@ bool commonAnode = false;
 int leds[ledsNo] = {
   pinA, pinB, pinC, pinD, pinE, pinF, pinG, pinDP
 };
-byte ledsStates[ledsNo] = {
+volatile byte ledsStates[ledsNo] = {
   LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW
 };
 int ledsPaths[ledsNo][joyDirectionsNo] = {
@@ -41,7 +43,7 @@ int ledsPaths[ledsNo][joyDirectionsNo] = {
 int currentLed = 7;
 byte lastLedState = LOW;
 
-bool displayResetJustOccured = false;
+volatile bool displayResetJustOccured = false;
 
 int joyX;
 int joyY;
@@ -50,19 +52,17 @@ bool joyIsNeutral = true;
 int joySensitivityBypassAmount = 50;
 
 volatile byte reading = HIGH;
-byte joySWState = HIGH;
-byte joyLastSWState = HIGH;
+volatile byte joySWState = HIGH;
 
-bool joyWasPressed = false;
-unsigned long joyPressTime = 0;
+volatile bool joyWasPressed = false;
+volatile unsigned long joyPressTime = 0;
 
 unsigned long programTime = 0;
-unsigned long lastDebounceTime = 0;
 unsigned int debounceDelay = 100;
 unsigned long programTimeBeforeLedChange = 0;
 unsigned int displayResetSignal = 3000;
 
-int systemState = 1;
+volatile int systemState = 1;
 
 void setup() {
   // put your setup code here, to run once:
@@ -70,7 +70,7 @@ void setup() {
     pinMode(leds[i], OUTPUT);
   }
   pinMode(joySWPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(joySWPin), joySWChangeState, RISING);
+  attachInterrupt(digitalPinToInterrupt(joySWPin), joySWChangeState, CHANGE);
 
   Serial.begin(9600);
 }
@@ -89,9 +89,7 @@ void decideStateExecution(int systemState) {
 }
 
 void executeFirstState() {
-  if (reading != joyLastSWState) {
-    lastDebounceTime = millis();
-  }
+  digitalWrite(leds[currentLed], lastLedState ^ commonAnode);
 
   programTime = millis();
 
@@ -106,26 +104,6 @@ void executeFirstState() {
 
   programTime = millis();
 
-  if (programTime - lastDebounceTime > debounceDelay) {
-    if (reading != joySWState) {
-      joySWState = reading;
-      
-      if (joySWState == HIGH) {
-        if (displayResetJustOccured) {
-          displayResetJustOccured = false;
-        } else {
-          ledsStates[currentLed] = lastLedState;
-          systemState = 2;
-        }
-      } else {
-        joyWasPressed = true;
-        joyPressTime = millis();
-      }
-    }
-  }
-
-  joyLastSWState = reading;
-
   if (programTime - programTimeBeforeLedChange >= ledBlinkInterval) {
     programTimeBeforeLedChange = programTime;
 
@@ -134,8 +112,6 @@ void executeFirstState() {
     } else {
       lastLedState = LOW;
     }
-
-    digitalWrite(leds[currentLed], lastLedState ^ commonAnode);
   }
 
   joyX = analogRead(joyXPin);
@@ -182,24 +158,6 @@ void executeFirstState() {
 void executeSecondState() {
   digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
 
-  if (reading != joyLastSWState) {
-    lastDebounceTime = millis();
-  }
-
-  programTime = millis();
-
-  if (programTime - lastDebounceTime > debounceDelay) {
-    if (reading != joySWState) {
-      joySWState = reading;
-
-      if (joySWState == HIGH) {
-        systemState = 1;
-      }
-    }
-  }
-
-  joyLastSWState = reading;
-
   joyX = analogRead(joyXPin);
   joyY = analogRead(joyYPin);
 
@@ -231,5 +189,39 @@ void executeDisplayReset() {
 }
 
 void joySWChangeState() {
+  static unsigned long lastInterruptTime = 0;
+  unsigned long interruptTime = millis();
+
   reading = digitalRead(joySWPin);
+
+  // if interrupts don't come within the debounce delay, assume there wasn't any noise during the button press
+  if (interruptTime - lastInterruptTime > debounceDelay) {
+    if (systemState == 1) {
+      if (reading != joySWState) {
+        joySWState = reading;
+        
+        if (joySWState == HIGH) {
+          if (displayResetJustOccured) {
+            displayResetJustOccured = false;
+          } else {
+            ledsStates[currentLed] = lastLedState;
+            systemState = 2;
+          }
+        } else {
+          joyWasPressed = true;
+          joyPressTime = millis();
+        }
+      }
+    } else {
+      if (reading != joySWState) {
+        joySWState = reading;
+
+        if (joySWState == HIGH) {
+          systemState = 1;
+        }
+      }
+    }
+  }
+
+  lastInterruptTime = interruptTime;
 }
