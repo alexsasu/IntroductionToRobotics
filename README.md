@@ -46,3 +46,36 @@ to the led).
 
 **Task Showcase:** https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexSasu
 </details>
+
+<details>
+<summary><h3>🕹 Homework #3 : 7-Segment Display Controlled Through the Use of a Joystick</h3></summary>
+<br>
+
+**Task Requirements:** A joystick will be used in order to navigate through the LEDs on a 7-segment display, and change their states. The movement between LEDs should be natural (meaning they should jump from the current position only to neighbors, but without passing through ”walls”. Below are the states that the system will go through.
+* State 1 (default, but also initiated after a button press in state 2): Current position blinking. Can use the joystick to move from one position to neighbors. Short pressing the button toggles state 2. Long pressing the button in state 1 resets the entire display by turning all the LEDs OFF, and moving the current position to the decimal point.
+* State 2 (initiated after a button press in state 1): The current LED stops blinking, adopting the state of the LED before selection (ON or OFF). Toggling the X (or Y, either one is fine) axis should change the segment state from ON to OFF or from OFF to ON. Clicking the joystick should save the LED state and exit back to state 1. 
+> Note: Long pressing the button to reset should only be available in state 1.
+
+The movement for each LED:
+
+| Current LED | UP  | DOWN | LEFT | RIGHT |
+| :---------: | :-: | :--: | :--: | :---: |
+|      a      | N/A |  g   |  f   |   b   |
+|      b      |  a  |  g   |  f   |  N/A  |
+|      c      |  g  |  d   |  e   |  dp   |
+|      d      |  g  | N/A  |  e   |   c   |
+|      e      |  g  |  d   | N/A  |   c   |
+|      f      |  a  |  g   | N/A  |   b   |
+|      g      |  a  |  d   | N/A  |  N/A  |
+|     dp      | N/A | N/A  |  c   |  N/A  |
+
+**Components Used:**
+* 1 7-segment display
+* 1 joystick
+* resistors and wires (per logic)
+
+**Setup Picture:** ![poza tema 3 lab robotica](https://user-images.githubusercontent.com/87432371/200939017-cff191bf-2ccd-4f08-a1a1-1c71f8ba71ed.jpg)
+
+
+**Task Showcase:** [https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexSasu](https://www.youtube.com/watch?v=hIlzHWG2Sw4&ab_channel=AlexSasu)
+</details>
