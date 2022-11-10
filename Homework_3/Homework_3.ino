@@ -30,18 +30,19 @@ volatile byte ledsStates[ledsNo] = {
   LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW
 };
 int ledsPaths[ledsNo][joyDirectionsNo] = {
-   -1,  6,  5,  1,
-    0,  6,  5, -1,
-    6,  3,  4,  7,
-    6, -1,  4,  2,
-    6,  3, -1,  2,
-    0,  6, -1,  1,
-    0,  3, -1, -1,
-   -1, -1,  2, -1
+//  UP  DOWN  LEFT  RIGHT
+   -1,  6,    5,    1,   // LED a
+    0,  6,    5,   -1,   // LED b
+    6,  3,    4,    7,   // LED c
+    6, -1,    4,    2,   // LED d
+    6,  3,   -1,    2,   // LED e
+    0,  6,   -1,    1,   // LED f
+    0,  3,   -1,   -1,   // LED g
+   -1, -1,    2,   -1    // LED dp
 };
 
 int currentLed = 7;
-byte lastLedState = LOW;
+byte blinkingLedState = LOW;
 
 volatile bool displayResetJustOccured = false;
 
@@ -89,7 +90,7 @@ void decideStateExecution(int systemState) {
 }
 
 void executeFirstState() {
-  digitalWrite(leds[currentLed], lastLedState ^ commonAnode);
+  digitalWrite(leds[currentLed], blinkingLedState ^ commonAnode);
 
   programTime = millis();
 
@@ -107,10 +108,10 @@ void executeFirstState() {
   if (programTime - programTimeBeforeLedChange >= ledBlinkInterval) {
     programTimeBeforeLedChange = programTime;
 
-    if (lastLedState == LOW) {
-      lastLedState = HIGH;
+    if (blinkingLedState == LOW) {
+      blinkingLedState = HIGH;
     } else {
-      lastLedState = LOW;
+      blinkingLedState = LOW;
     }
   }
 
@@ -204,7 +205,6 @@ void joySWChangeState() {
           if (displayResetJustOccured) {
             displayResetJustOccured = false;
           } else {
-            ledsStates[currentLed] = lastLedState;
             systemState = 2;
           }
         } else {
