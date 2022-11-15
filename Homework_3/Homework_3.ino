@@ -20,13 +20,17 @@ const int joyDirectionsNo = 4;
 const int joyInferiorThreshold = 400;
 const int joySuperiorThreshold = 600;
 
-const int ledBlinkInterval = 500;
+const unsigned int joySWDebounceDelay = 50;
+const unsigned int displayResetSignal = 3000;
+const unsigned int ledBlinkInterval = 500;
+const unsigned int joySensitivityBypassAmount = 50;
 
-bool commonAnode = false;
-int leds[ledsNo] = {
+const bool commonAnode = false;
+const int ledsPins[ledsNo] = {
   pinA, pinB, pinC, pinD, pinE, pinF, pinG, pinDP
 };
-volatile byte ledsStates[ledsNo] = {
+
+byte ledsStates[ledsNo] = {
   LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW
 };
 int ledsPaths[ledsNo][joyDirectionsNo] = {
@@ -46,29 +50,24 @@ byte blinkingLedState = LOW;
 
 volatile bool displayResetJustOccured = false;
 
-int joyX;
-int joyY;
+volatile byte joySWReading = HIGH;
+volatile byte joySWState = HIGH;
+int joyXValue;
+int joyYValue;
 int joyDirection = -1; // the joystick can move in 4 directions: UP - 0, DOWN - 1, LEFT - 2, RIGHT - 3
 bool joyIsNeutral = true;
-int joySensitivityBypassAmount = 50;
-
-volatile byte reading = HIGH;
-volatile byte joySWState = HIGH;
-
 volatile bool joyWasPressed = false;
 volatile unsigned long joyPressTime = 0;
 
 unsigned long programTime = 0;
-unsigned int debounceDelay = 100;
 unsigned long programTimeBeforeLedChange = 0;
-unsigned int displayResetSignal = 3000;
 
 volatile int systemState = 1;
 
 void setup() {
   // put your setup code here, to run once:
   for (int i = 0; i < ledsNo; ++i) {
-    pinMode(leds[i], OUTPUT);
+    pinMode(ledsPins[i], OUTPUT);
   }
   pinMode(joySWPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(joySWPin), joySWChangeState, CHANGE);
@@ -90,11 +89,11 @@ void decideStateExecution(int systemState) {
 }
 
 void executeFirstState() {
-  digitalWrite(leds[currentLed], blinkingLedState ^ commonAnode);
+  digitalWrite(ledsPins[currentLed], blinkingLedState ^ commonAnode);
 
   programTime = millis();
 
-  if (reading == joySWState && reading == LOW) {
+  if (joySWReading == joySWState && joySWReading == LOW) {
     if (joyWasPressed) {
       if (programTime - joyPressTime >= displayResetSignal) {
         executeDisplayReset();
@@ -115,67 +114,66 @@ void executeFirstState() {
     }
   }
 
-  joyX = analogRead(joyXPin);
-  joyY = analogRead(joyYPin);
+  joyXValue = analogRead(joyXPin);
+  joyYValue = analogRead(joyYPin);
 
-  if (joyY > joySuperiorThreshold && joyY - joySuperiorThreshold > joySensitivityBypassAmount && joyIsNeutral) {
+  if (joyYValue > joySuperiorThreshold && joyYValue - joySuperiorThreshold > joySensitivityBypassAmount && joyIsNeutral) {
     joyIsNeutral = false;
     joyDirection = 0;
-    digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+    digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
 
     attemptRepositioning(currentLed, joyDirection);
   } 
   
-  if (joyY < joyInferiorThreshold && joyInferiorThreshold - joyY > joySensitivityBypassAmount && joyIsNeutral) {
+  if (joyYValue < joyInferiorThreshold && joyInferiorThreshold - joyYValue > joySensitivityBypassAmount && joyIsNeutral) {
     joyIsNeutral = false;
     joyDirection = 1;
-    digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+    digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
     
     attemptRepositioning(currentLed, joyDirection);
   } 
   
-  if (joyX < joyInferiorThreshold && joyInferiorThreshold - joyX > joySensitivityBypassAmount && joyIsNeutral) {
+  if (joyXValue < joyInferiorThreshold && joyInferiorThreshold - joyXValue > joySensitivityBypassAmount && joyIsNeutral) {
     joyIsNeutral = false;
     joyDirection = 2;
-    digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+    digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
     
     attemptRepositioning(currentLed, joyDirection);
   } 
   
-  if (joyX > joySuperiorThreshold && joyX - joySuperiorThreshold > joySensitivityBypassAmount && joyIsNeutral) {
+  if (joyXValue > joySuperiorThreshold && joyXValue - joySuperiorThreshold > joySensitivityBypassAmount && joyIsNeutral) {
     joyIsNeutral = false;
     joyDirection = 3;
-    digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+    digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
     
     attemptRepositioning(currentLed, joyDirection);
   }
 
-  if (joyX >= joyInferiorThreshold && joyX <= joySuperiorThreshold &&
-      joyY >= joyInferiorThreshold && joyY <= joySuperiorThreshold) {
+  if (joyXValue >= joyInferiorThreshold && joyXValue <= joySuperiorThreshold &&
+      joyYValue >= joyInferiorThreshold && joyYValue <= joySuperiorThreshold) {
     joyIsNeutral = true;
   }
 }
 
 void executeSecondState() {
-  digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+  digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
 
-  joyX = analogRead(joyXPin);
-  joyY = analogRead(joyYPin);
+  joyYValue = analogRead(joyYPin);
 
-  if (((joyY < joyInferiorThreshold && joyInferiorThreshold - joyY > joySensitivityBypassAmount) || 
-       (joyY > joySuperiorThreshold && joyY - joySuperiorThreshold > joySensitivityBypassAmount)) && joyIsNeutral) {
+  if (((joyYValue < joyInferiorThreshold && joyInferiorThreshold - joyYValue > joySensitivityBypassAmount) || 
+       (joyYValue > joySuperiorThreshold && joyYValue - joySuperiorThreshold > joySensitivityBypassAmount)) && joyIsNeutral) {
     joyIsNeutral = false;
     ledsStates[currentLed] = !ledsStates[currentLed];
   }
 
-  if (joyY >= joyInferiorThreshold && joyY <= joySuperiorThreshold) {
+  if (joyYValue >= joyInferiorThreshold && joyYValue <= joySuperiorThreshold) {
     joyIsNeutral = true;
   }
 }
 
 void attemptRepositioning(int& currentLed, int joyDirection) {
   if (ledsPaths[currentLed][joyDirection] != -1) {
-    digitalWrite(leds[currentLed], ledsStates[currentLed] ^ commonAnode);
+    digitalWrite(ledsPins[currentLed], ledsStates[currentLed] ^ commonAnode);
     currentLed = ledsPaths[currentLed][joyDirection];
   }
 }
@@ -183,7 +181,7 @@ void attemptRepositioning(int& currentLed, int joyDirection) {
 void executeDisplayReset() {
   for (int i = 0; i < ledsNo; ++i) {
     ledsStates[i] = LOW;
-    digitalWrite(leds[i], ledsStates[i] ^ commonAnode);
+    digitalWrite(ledsPins[i], ledsStates[i] ^ commonAnode);
   }
   currentLed = 7;
   displayResetJustOccured = true;
@@ -193,13 +191,13 @@ void joySWChangeState() {
   static unsigned long lastInterruptTime = 0;
   unsigned long interruptTime = millis();
 
-  reading = digitalRead(joySWPin);
+  joySWReading = digitalRead(joySWPin);
 
   // if interrupts don't come within the debounce delay, assume there wasn't any noise during the button press
-  if (interruptTime - lastInterruptTime > debounceDelay) {
+  if (interruptTime - lastInterruptTime > joySWDebounceDelay) {
     if (systemState == 1) {
-      if (reading != joySWState) {
-        joySWState = reading;
+      if (joySWReading != joySWState) {
+        joySWState = joySWReading;
         
         if (joySWState == HIGH) {
           if (displayResetJustOccured) {
@@ -213,8 +211,8 @@ void joySWChangeState() {
         }
       }
     } else {
-      if (reading != joySWState) {
-        joySWState = reading;
+      if (joySWReading != joySWState) {
+        joySWState = joySWReading;
 
         if (joySWState == HIGH) {
           systemState = 1;
