@@ -76,6 +76,25 @@ The movement for each LED:
 
 **Setup Picture:** ![poza tema 3 lab robotica](https://user-images.githubusercontent.com/87432371/200939017-cff191bf-2ccd-4f08-a1a1-1c71f8ba71ed.jpg)
 
-
 **Task Showcase:** [https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexSasu](https://www.youtube.com/watch?v=hIlzHWG2Sw4&ab_channel=AlexSasu)
+</details>
+
+<details>
+<summary><h3>🔢🕹 Homework #4 : 4-Digit 7-Segment Display Controlled Through the Use of a Joystick</h3></summary>
+<br>
+
+**Task Requirements:** A joystick will be used as means of navigating through a 4-digit 7-segment display's digits and changing their values. Pressing the joystick's button will lock the system in on the current digit, and the Y axis will be made available, so as to increment or decrement the number shown on the current display digit. Keeping the button pressed will reset the values of all digits, and the system's current position will be moved to the rightmost digit, in the first state.
+* State 1 (default, but also initiated after a button press in state 2): The X axis of the joystick can be used to cycle through the 4 digits; using the other axis does nothing. A blinking decimal point shows the current digit position. When pressing the joystick's button, the system locks in on the selected digit, and it enters the second state. Long pressing the button in state 1 resets the entire display by changing each display digit's value to the number 0, and moving the current position to the rightmost display digit.
+* State 2 (initiated after a button press in state 1): The decimal point of the current digit stops blinking, adopting the ON state. In this state, the X axis can no longer be used to cycle through the 4 digits. Instead, by using the Y axis, the number on the current display digit can be incremented or decremented, being able to show numbers IN HEX (aka from 0 to F). Pressing the button again returns the system to state 2. Moreover, when changing the numbers, they should not be changed continuously, while holding the joystick in one direction, but rather, they should change only for every joystick movement. 
+> Note: Long pressing the button to reset should only be available in state 1.
+
+**Components Used:**
+* 1 4-digit 7-segment display
+* 1 74HC595 shift register
+* 1 joystick
+* resistors and wires (per logic)
+
+**Setup Picture:** ![poza tema 4 lab robotica](https://user-images.githubusercontent.com/87432371/202314041-417979cb-df6a-4d71-b288-0a64b7b35a24.jpg)
+
+**Task Showcase:** https://www.youtube.com/watch?v=mt6fiHb_Kcg&ab_channel=AlexSasu
 </details>
