@@ -80,7 +80,7 @@ The movement for each LED:
 </details>
 
 <details>
-<summary><h3>🔢🕹 Homework #4 : 4-Digit 7-Segment Display Controlled Through the Use of a Joystick</h3></summary>
+<summary><h3>🔢 Homework #4 : 4-Digit 7-Segment Display Controlled Through the Use of a Joystick</h3></summary>
 <br>
 
 **Task Requirements:** A joystick will be used as means of navigating through a 4-digit 7-segment display's digits and changing their values. Pressing the joystick's button will lock the system in on the current digit, and the Y axis will be made available, so as to increment or decrement the number shown on the current display digit. Keeping the button pressed will reset the values of all digits, and the system's current position will be moved to the rightmost digit, in the first state.
