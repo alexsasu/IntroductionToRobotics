@@ -22,7 +22,7 @@ to the led).
 
 **Setup Picture:** ![poza tema 1 lab robotica](https://user-images.githubusercontent.com/87432371/197353566-af59eeda-ca8c-477d-97d2-0b4c5ef624bc.jpg)
 
-**Task Showcase:** https://www.youtube.com/watch?v=oJw1XVFhmSI&ab_channel=AlexSasu
+**Task Showcase:** https://www.youtube.com/watch?v=oJw1XVFhmSI&ab_channel=AlexandruSasu
 </details>
 
 <details>
@@ -44,7 +44,7 @@ to the led).
 
 **Setup Picture:** ![poza tema 2 lab robotica](https://user-images.githubusercontent.com/87432371/199686660-a2e49f70-a826-460d-917b-6542ec478b71.jpg)
 
-**Task Showcase:** https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexSasu
+**Task Showcase:** https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexandruSasu
 </details>
 
 <details>
@@ -76,7 +76,7 @@ The movement for each LED:
 
 **Setup Picture:** ![poza tema 3 lab robotica](https://user-images.githubusercontent.com/87432371/200939017-cff191bf-2ccd-4f08-a1a1-1c71f8ba71ed.jpg)
 
-**Task Showcase:** [https://www.youtube.com/watch?v=hJEe0grXwIo&ab_channel=AlexSasu](https://www.youtube.com/watch?v=hIlzHWG2Sw4&ab_channel=AlexSasu)
+**Task Showcase:** https://www.youtube.com/watch?v=hIlzHWG2Sw4&ab_channel=AlexandruSasu
 </details>
 
 <details>
@@ -96,5 +96,55 @@ The movement for each LED:
 
 **Setup Picture:** ![poza tema 4 lab robotica](https://user-images.githubusercontent.com/87432371/202314041-417979cb-df6a-4d71-b288-0a64b7b35a24.jpg)
 
-**Task Showcase:** https://www.youtube.com/watch?v=mt6fiHb_Kcg&ab_channel=AlexSasu
+**Task Showcase:** https://www.youtube.com/watch?v=mt6fiHb_Kcg&ab_channel=AlexandruSasu
+</details>
+
+<details>
+<summary><h3>🎮 Homework #5 : LCD Menu for an Unimplemented Game on an 8x8 Matrix</h3></summary>
+<br>
+
+**Task Requirements:** Create a menu on an LCD for a game displayed on a matrix. In order to move through the menu, the user should be able to scroll on the LCD with the help of a joystick. The menu should include the following functionality:
+1. When powering up a game, a greeting message should be shown for a few moments.
+2. Should contain roughly the following categories:
+   - Start game, starts the initial level of the game
+   - Highscore:
+     - Initially, there are 0 highscores.
+     - Updated when the game is done. Highest possible score should be achieved by starting at a higher level.
+     - Saves the top 5+ values in EEPROM with name and score.
+   - Settings:
+     - Enter name. The name should be shown in highscore. Maybe somewhere else, as well?
+     - Starting level: Set the starting level value. The idea is to be able to start from a higher level as well. Can be replaced with difficulty.
+     - LCD contrast control (optional, it replaces the potentiometer). Save it to EEPROM.
+     - LCD brightness control (mandatory, must change LED wire that’s directly connected to 5v). Save it to EEPROM.
+     - Matrix brightness control (see function setIntesnity from the ledControl library). Save it to EEPROM.
+     - Sounds on or off. Save it to EEPROM.
+     - Extra stuff can include items specific to the game mechanics, or other settings such as chosen theme song, etc. Again, save it to EEPROM.
+   - About: should include details about the creator(s) of the game. At least game name, author, and GitHub link or user. (use scrolling text?)
+   - How to play: short and informative description.
+3. While playing the game: display all relevant info
+   - Lives
+   - Level
+   - Score
+   - Time?
+   - Player name?
+   - etc
+4. Upon game ending:
+   - Screen 1: a message such as "Congratulations on reaching level/score X". "You did better than y people.". etc. Switches to Screen 2 upon interaction (button press) or after a few moments.
+   - Screen 2: display relevant game info: score, time, lives left, etc. Must inform the player if they beat the highscore. This menu should only be closed by the player, by pressing a button.
+> Note: The menu should be intuitive and obvious how to use.
+
+**Components Used:**
+* 1 LCD
+* 1 1088AS matrix
+* 1 MAX7219 LED Driver
+* 1 joystick
+* 1 passive buzzer
+* 1 potentiometer (for controlling the LCD contrast)
+* 1 10μF, 50V electrolytic capacitor
+* 1 (104) 0.1μF ceramic capacitor
+* resistors and wires (per logic)
+
+**Setup Picture:** ![poza tema 5 lab robotica](https://user-images.githubusercontent.com/87432371/206425397-38b0746b-3fba-4e1e-a923-cbf9a10006fd.jpg)
+
+**Task Showcase:** https://www.youtube.com/watch?v=hDcGyL06Gk4&ab_channel=AlexandruSasu
 </details>
